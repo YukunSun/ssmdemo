@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.syk.mapper.UserMapper">
+	<insert id="add" parameterType="com.syk.model.User">
+		insert into
+		user(name,password,age,sex,address,come_time)
+		values(#{name},#{password},#{age},#{sex},#{address},#{come_time})
+	</insert>
+	<select id="selByName" parameterType="java.lang.String"
+		resultType="com.syk.model.User">
+		SELECT * from `user` WHERE `name`= #{name}
+	</select>
+	<select id="login" parameterType="java.lang.String" resultType="com.syk.model.User">
+		SELECT * from `user` WHERE `name`= #{name}
+	</select>
+	<!--#变量名#表示占位符变量，使用$变量名$表示非占位符变量。 -->
+	<select id="sel" parameterType="java.util.HashMap" resultType="com.syk.model.User">
+		select * from user order by name limit ${offset},${limit}
+	</select>
+	<select id="countAll" resultType="int">
+		select count(*) from user
+	</select>
+	<!-- 条件查询 -->
+	<select id="ifSel" parameterType="com.syk.model.UserQueryByPage"
+		resultType="com.syk.model.User">
+		select * from user
+		<where>
+			<include refid="whereClause"></include>
+		</where>
+		limit ${offset},${limit}
+	</select>
+	<select id="countIfSel" parameterType="com.syk.model.User" resultType="int">
+		select count(*) from user
+		<where>
+			<include refid="whereClause"></include>
+		</where>
+	</select>
+	<sql id="whereClause">
+		<if test="name !='' and name!=null">
+			name like #{name}
+		</if>
+		<if test="age!=null and age!='' and age!=-1">
+			and age=#{age}
+		</if>
+		<if test="sex!=null and sex!=''">
+			and sex=#{sex}
+		</if>
+		<if test="address!=null and address !=''">
+			and address like #{address}
+		</if>
+		<if test="come_time!=null and come_time!=''">
+			and come_time = #{come_time}
+		</if>
+	</sql>
+</mapper>
